@@ -7,20 +7,20 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
-  title: 'Breathe Map — Smart City Air Quality Simulation Platform',
-  description: 'Breathe Map is a smart-city platform that visualizes and simulates air quality at a zone level using urban data, enabling data-driven environmental planning.',
+  title: 'SENSED — Smart City Air Quality Simulation Platform',
+  description: 'SENSED is a smart-city platform that visualizes and simulates air quality at a zone level using urban data, enabling data-driven environmental planning.',
   keywords: ['smart city', 'air quality', 'AQI', 'urban planning', 'GIS', 'pollution simulation'],
   metadataBase: new URL('https://breathe-map-w.vercel.app'),
   openGraph: {
-    title: 'Breathe Map — Smart City Air Quality Simulation Platform',
+    title: 'SENSED — Smart City Air Quality Simulation Platform',
     description: 'Visualize and simulate air quality at a zone level using urban data for data-driven environmental planning.',
     url: 'https://breathe-map-w.vercel.app',
-    siteName: 'Breathe Map',
+    siteName: 'SENSED',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Breathe Map — Smart City Air Quality Simulation Platform',
+    title: 'SENSED — Smart City Air Quality Simulation Platform',
     description: 'Visualize and simulate air quality at a zone level using urban data for data-driven environmental planning.',
   },
   icons: {

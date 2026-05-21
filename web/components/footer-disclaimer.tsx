@@ -33,7 +33,7 @@ export function FooterDisclaimer() {
               className="text-xs font-medium"
               style={{ color: '#71717a', fontFamily: FONT_DISPLAY }}
             >
-              © 2026 Breathe Map
+              © 2026 SENSED
             </span>
           </div>
 

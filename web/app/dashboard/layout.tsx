@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: 'Dashboard | Breathe Map',
+    title: 'Dashboard | SENSED',
 }
 
 export default function DashboardLayout({

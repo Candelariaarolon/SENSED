@@ -17,9 +17,7 @@ const FONT_BODY = "'Google Sans', sans-serif"
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/dashboard', label: 'Dashboard' },
-  { href: '/zones', label: 'Zones' },
-  { href: '/analysis', label: 'Analysis' },
-  { href: '/simulation', label: 'Simulation' },
+  { href: '/sensores', label: 'Sensores' },
 ]
 
 function PinIcon({ size = 12, color = 'currentColor' }: { size?: number; color?: string }) {
@@ -44,7 +42,7 @@ function BrandMark() {
           backgroundClip: 'text',
         }}
       >
-        Breathe Map
+        SENSED
       </span>
     </Link>
   )
@@ -54,7 +52,6 @@ export function NavBar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [cityDropdownOpen, setCityDropdownOpen] = useState(false)
   const [addCityOpen, setAddCityOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const { currentCity, cities, setCurrentCity } = useCity()
@@ -148,101 +145,10 @@ export function NavBar() {
                 )
               })}
 
-              {/* City selector + Add City + Export */}
-              <div className="relative z-50 ml-4 pl-4 border-l border-zinc-800/60 flex items-center gap-1">
-                <button
-                  onClick={() => setCityDropdownOpen((v) => !v)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[13px] font-medium transition-colors duration-150"
-                  style={{
-                    fontFamily: FONT_DISPLAY,
-                    color: '#6ee7b7',
-                    background: 'transparent',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(52,211,153,0.05)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <PinIcon size={11} color="#6ee7b7" />
-                  <span>{currentCity.name}</span>
-                  <svg
-                    width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                    style={{
-                      opacity: 0.5,
-                      transform: cityDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.2s ease',
-                    }}
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-
-                {/* Add City — icon-only with tooltip (desktop toolbar) */}
-                <button
-                  onClick={() => { setCityDropdownOpen(false); setAddCityOpen(true) }}
-                  title="Add new city"
-                  aria-label="Add new city"
-                  className="w-7 h-7 flex items-center justify-center rounded-lg text-zinc-600 hover:text-emerald-400 hover:bg-zinc-800/50 transition-colors"
-                >
-                  <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                  </svg>
-                </button>
-
-                {/* Export — icon-only with tooltip (desktop toolbar) */}
-                <button
-                  onClick={() => setExportOpen(true)}
-                  title="Export report"
-                  aria-label="Export report"
-                  className="w-7 h-7 flex items-center justify-center rounded-lg text-zinc-600 hover:text-emerald-400 hover:bg-zinc-800/50 transition-colors"
-                >
-                  <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" strokeLinecap="round" />
-                    <polyline points="7 10 12 15 17 10" strokeLinecap="round" strokeLinejoin="round" />
-                    <line x1="12" y1="15" x2="12" y2="3" strokeLinecap="round" />
-                  </svg>
-                </button>
-
-                {cityDropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setCityDropdownOpen(false)} />
-                    <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-zinc-800/50 bg-zinc-950/96 backdrop-blur-md shadow-xl z-50 py-1.5 overflow-hidden">
-                      {cities.map((city) => (
-                        <button
-                          key={city.id}
-                          onClick={() => { setCurrentCity(city.id); setCityDropdownOpen(false) }}
-                          className={cn(
-                            'w-full text-left px-4 py-2.5 text-[13px] transition-colors hover:bg-zinc-800/40',
-                            city.id === currentCity.id
-                              ? 'text-emerald-400 font-medium'
-                              : 'text-zinc-500 hover:text-zinc-200',
-                          )}
-                          style={{ fontFamily: FONT_DISPLAY }}
-                        >
-                          {city.name}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
             </div>
 
-            {/* ── Mobile: city chip + hamburger ── */}
+            {/* ── Mobile: hamburger ── */}
             <div className="flex lg:hidden items-center gap-2.5">
-              {/* Read-only city indicator */}
-              <div
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[12px] font-medium"
-                style={{
-                  fontFamily: FONT_DISPLAY,
-                  color: '#6ee7b7',
-                  background: 'rgba(52,211,153,0.06)',
-                  border: '1px solid rgba(52,211,153,0.12)',
-                }}
-              >
-                <PinIcon size={10} color="#6ee7b7" />
-                {currentCity.name}
-              </div>
-
               {/* Hamburger toggle — icon-only (allowed by spec) */}
               <button
                 onClick={() => setMenuOpen((v) => !v)}
