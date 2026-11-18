@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { ref, onValue } from 'firebase/database'
 import { db } from '@/lib/firebase'
@@ -117,6 +117,7 @@ export default function DashboardPage() {
   const [selectedDevice, setSelected] = useState('device1')
   const [readings, setReadings]       = useState<number[]>([])
   const [lastTs, setLastTs]           = useState(0)
+  const lastTsRef                     = useRef(0)
   const [devicesData, setDevicesData] = useState<Record<string, { co2: number; ts: number } | null>>({
     device1: null, device2: null, device3: null, device4: null,
   })
@@ -126,22 +127,23 @@ export default function DashboardPage() {
     const unsubs: (() => void)[] = []
 
     DEVICE_CONFIG.forEach((cfg) => {
-      const r = ref(db, `telemetry/${cfg.id}`)
+      // El sensor sobrescribe /deviceN con la última medición (objeto único, sin historial)
+      const r = ref(db, cfg.id)
       const unsub = onValue(r, (snap) => {
-        if (!snap.exists()) {
+        const latest = snap.val() as TelemetryEntry | null
+        if (!latest || typeof latest['Co2-ppm'] !== 'number') {
           setDevicesData((prev) => ({ ...prev, [cfg.id]: null }))
           return
         }
-        const raw = snap.val() as Record<string, TelemetryEntry>
-        const sortedKeys = Object.keys(raw).sort()
-        const latestKey  = sortedKeys[sortedKeys.length - 1]
-        const latest     = raw[latestKey]
 
         setDevicesData((prev) => ({ ...prev, [cfg.id]: { co2: latest['Co2-ppm'], ts: latest.ts } }))
 
-        // Keep full readings for device1 stats
+        // Acumular lecturas de device1 recibidas en esta sesión (máx. 20) para estadísticas
         if (cfg.id === 'device1') {
-          setReadings(sortedKeys.slice(-20).map((k) => raw[k]['Co2-ppm']))
+          if (lastTsRef.current !== latest.ts) {
+            lastTsRef.current = latest.ts
+            setReadings((prev) => [...prev, latest['Co2-ppm']].slice(-20))
+          }
           setLastTs(latest.ts)
         }
       })

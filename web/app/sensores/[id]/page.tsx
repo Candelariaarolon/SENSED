@@ -66,20 +66,18 @@ export default function SensorDetailPage({ params }: { params: Promise<{ id: str
 
   useEffect(() => {
     setMounted(true)
-    const r = ref(db, `telemetry/${id}`)
+    // El sensor sobrescribe /deviceN con la última medición (sin historial en Firebase).
+    // Acumulamos las lecturas que llegan mientras la página está abierta (máx. 20).
+    const r = ref(db, id)
     const unsub = onValue(r, (snap) => {
-      if (!snap.exists()) return
-      const raw = snap.val() as Record<string, TelemetryEntry>
-      // Push keys son cronológicas: ordenar y tomar las últimas 20
-      const sorted = Object.keys(raw)
-        .sort()
-        .slice(-20)
-        .map((k) => ({
-          co2: raw[k]['Co2-ppm'],
-          ts: raw[k].ts,
-          time: formatTime(raw[k].ts),
-        }))
-      setReadings(sorted)
+      const latest = snap.val() as TelemetryEntry | null
+      if (!latest || typeof latest['Co2-ppm'] !== 'number') return
+      const reading = { co2: latest['Co2-ppm'], ts: latest.ts, time: formatTime(latest.ts) }
+      setReadings((prev) =>
+        prev.length && prev[prev.length - 1].ts === reading.ts
+          ? prev
+          : [...prev, reading].slice(-20)
+      )
     })
     return () => unsub()
   }, [id])

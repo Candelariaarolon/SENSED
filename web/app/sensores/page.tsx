@@ -185,16 +185,14 @@ export default function SensoresPage() {
     const unsubs: (() => void)[] = []
 
     SENSORS.forEach((sensor) => {
-      const r = ref(db, `telemetry/${sensor.id}`)
+      // El sensor sobrescribe /deviceN con la última medición (objeto único, sin historial)
+      const r = ref(db, sensor.id)
       const unsub = onValue(r, (snap) => {
-        if (!snap.exists()) {
+        const latest = snap.val() as TelemetryEntry | null
+        if (!latest || typeof latest['Co2-ppm'] !== 'number') {
           setSensorData((prev) => ({ ...prev, [sensor.id]: null }))
           return
         }
-        const raw = snap.val() as Record<string, TelemetryEntry>
-        // Push keys son lexicográficamente cronológicas: la última es la más reciente
-        const keys = Object.keys(raw).sort()
-        const latest = raw[keys[keys.length - 1]]
         setSensorData((prev) => ({
           ...prev,
           [sensor.id]: { co2: latest['Co2-ppm'], ts: latest.ts, connected: true },
